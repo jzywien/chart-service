@@ -10,6 +10,9 @@ const fastify = require('fastify')({
     caseSensitive: false,
     requestIdHeader: 'X-Correlation-Id'
 });
+const fastifyCors = require('fastify-cors');
+
+fastify.register(fastifyCors, {exposedHeaders: 'Content-Disposition'});
 
 fastify.log.info({func: 'startup'}, 'initilizing routes');
 configureRoutes(fastify);
