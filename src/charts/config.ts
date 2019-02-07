@@ -86,3 +86,61 @@ export const baseBarConfig = {
         }
     }
 };
+
+export const basePieConfig = {
+    type: 'pie',
+    data: {
+
+        datasets: [{
+            data: [33, 33, 33],
+            backgroundColor: [
+                'rgb(255,0,0)',
+                'rgb(0,255,0)',
+                'rgb(0,0,255)'
+            ]
+        }],
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: [
+            'Yes',
+            'No',
+            'Maybe'
+        ]
+    },
+    options: {
+        legend: {
+            position: 'right'
+        },
+        labels: {
+            fontSize: '24pt'
+        },
+        // plugins: [{
+        //     afterDatasetsDraw: (chart) => {
+        //         var ctx = chart.ctx;
+
+        //         chart.data.datasets.forEach((dataset, i) => {
+        //             var meta = chart.getDatasetMeta(i);
+        //             if (!meta.hidden) {
+        //                 meta.data.forEach((element, index) => {
+        //                     // Draw the text in black, with the specified font
+        //                     ctx.fillStyle = 'rgb(0, 0, 0)';
+
+        //                     var fontSize = 16;
+        //                     ctx.font = '16px Helvetica Neue';
+
+        //                     var dataString = `${dataset.data[index]}% (1)`;
+
+        //                     // Make sure alignment settings are correct
+        //                     ctx.textAlign = 'center';
+        //                     ctx.textBaseline = 'middle';
+
+        //                     var padding = 5;
+        //                     var position = element.tooltipPosition();
+        //                     ctx.fillText(dataString, position.x, position.y - (fontSize / 2) - padding);
+        //                 });
+        //             }
+        //         })
+        //     }
+        // }]
+    }
+};

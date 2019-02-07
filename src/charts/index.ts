@@ -8,6 +8,9 @@ const { promisify } = require('util');
 const chartJsPath = path.dirname(require.resolve('chart.js'));
 const chartJsSrc = fs.readFileSync(`${chartJsPath}/../dist/Chart.js`, 'utf-8');
 
+const chartJsPluginPath = path.dirname(require.resolve('chartjs-plugin-datalabels'));
+const chartJsPluginSrc = fs.readFileSync(`${chartJsPluginPath}/../dist/chartjs-plugin-datalabels.js`, 'utf-8');
+
 export class ChartJs extends EventEmitter {
     constructor(width = 600, height = 400) {
         super();
@@ -26,6 +29,7 @@ export class ChartJs extends EventEmitter {
                     </div>                
                 </body>
                 <script>${chartJsSrc}</script>
+                <script>${chartJsPluginSrc}</script>
             </html>
         `;
 
@@ -39,6 +43,12 @@ export class ChartJs extends EventEmitter {
         });
 
         this.window = window;
+        this.Chart = this.window.Chart;
+
+        // Unregister ChartDataLables from the global scope
+        const ChartDataLabels = this.window.ChartDataLabels;
+        this.Chart.plugins.unregister(ChartDataLabels);
+
         this.window.CanvasRenderingContext2D = Canvas.Context2D;
         this.canvas = this.window.document.getElementById('myChart');
         this.ctx = this.canvas.getContext('2d');
@@ -70,7 +80,7 @@ export class ChartJs extends EventEmitter {
             }
         }
 
-        this._chart = new this.window.Chart(this.ctx, chartConfig)
+        this._chart = new this.Chart(this.ctx, chartConfig)
 
         return this
     }
@@ -95,5 +105,15 @@ export class ChartJs extends EventEmitter {
             reader.readAsArrayBuffer(blob)
           }))
           .catch(console.error)
-      }    
+      }
+
+      destroy() {
+          this.window && this.window.close();
+          this._chart && this._chart.destroy();
+          this.window = null;
+          this._chart = null;
+          this.canvas = null;
+          this.ctx = null;
+      }
+
 }

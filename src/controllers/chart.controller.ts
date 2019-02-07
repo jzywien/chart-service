@@ -1,7 +1,5 @@
 import { ChartJs } from '../charts';
-const cjs = new ChartJs(600, 400);
-import {baseBarConfig} from '../charts/config';
-
+import {baseBarConfig, basePieConfig} from '../charts/config';
 
 export default fastify => {
     fastify.get('/charts', {
@@ -14,11 +12,13 @@ export default fastify => {
 
 };
 
-
 const getChart = async (request, reply) => {
+    const { body } = request;
     try {
+        const cjs = new ChartJs(600, 400);
         await cjs.drawChart(baseBarConfig);
-        const chartBuffer = await cjs.toBuffer();    
+        const chartBuffer = await cjs.toBuffer();
+        cjs.destroy();
 
         reply
             .code(200)
@@ -26,6 +26,8 @@ const getChart = async (request, reply) => {
             .type('image/png')
             .send(chartBuffer);
     } catch (err) {
-        console.error(err);
+        reply
+            .code(500)
+            .send(err);
     }
 };
