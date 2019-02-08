@@ -32,10 +32,12 @@ export class PieChartConfigBuilder implements IChartConfigBuilder {
                     datalabels: {
                         anchor: 'end',
                         align: 'end',                        
-                        formatter: function(value) {
+                        formatter: (value) => {
                             return `${Math.round((value / numResponses) * 100)}% (${value})`;
+                        },
+                        display: (context) => {
+                            return context.dataset.data[context.dataIndex] !== 0;
                         }
-
                     }
                 }                
             }

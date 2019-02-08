@@ -23,13 +23,11 @@ export const buildChart = async (request, reply) => {
         const generator: IChartGenerator = new PuppeteerChartGenerator(chartRequest);
         const chartBuffer = await generator.generate(config);
 
-        reply
-        .code(200)
-        .type('image/png')
-        .send(chartBuffer);
+        reply.code(200)
+            .type('image/png')
+            .send(chartBuffer);
     } catch (err) {
-        reply
-        .code(500)
-        .send(err);
+        reply.code(500)
+            .send(err);
     }
 };
