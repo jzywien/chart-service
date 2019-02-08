@@ -7,12 +7,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Server",
             "program": "${workspaceFolder}/src/index.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Puppeteer",
+            "program": "${workspaceFolder}/src/puppeteer.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        },
     ]
 }

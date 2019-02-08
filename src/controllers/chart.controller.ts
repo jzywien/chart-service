@@ -1,33 +1,35 @@
-import { ChartJs } from '../charts';
-import {baseBarConfig, basePieConfig} from '../charts/config';
+import { ChartRequest, IChartGenerator } from "../charts/charts";
+import { ChartConfigurationFactory } from "../charts/chartConfigFactory";
+import {PuppeteerChartGenerator} from "../charts/puppeteerChartGenerator";
+//import { JsDomChartGenerator } from "../charts/jsdomChartGenerator";
 
 export default fastify => {
-    fastify.get('/charts', {
+    fastify.post('/charts', {
         logLevel: 'warn',
         schema: {
             description: 'Check Chart',
             tags: ['chart']
         }
-    }, getChart);
-
+    }, buildChart);
 };
 
-const getChart = async (request, reply) => {
-    const { body } = request;
+export const buildChart = async (request, reply) => {
     try {
-        const cjs = new ChartJs(600, 400);
-        await cjs.drawChart(baseBarConfig);
-        const chartBuffer = await cjs.toBuffer();
-        cjs.destroy();
+        const chartRequest: ChartRequest = request.body;
+
+        const chartFactory = new ChartConfigurationFactory();
+        const chartBuilder = chartFactory.create(chartRequest.type);
+        const config = chartBuilder.create(chartRequest);
+        const generator: IChartGenerator = new PuppeteerChartGenerator(chartRequest);
+        const chartBuffer = await generator.generate(config);
 
         reply
-            .code(200)
-            // .header('Content-Disposition', 'attachment; filename=chart.png') // Include to download resulting file
-            .type('image/png')
-            .send(chartBuffer);
+        .code(200)
+        .type('image/png')
+        .send(chartBuffer);
     } catch (err) {
         reply
-            .code(500)
-            .send(err);
+        .code(500)
+        .send(err);
     }
 };
